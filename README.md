@@ -26,6 +26,24 @@ and workspace for convolutional layers.
 * **Backward compatibility with BVLC Caffe and NVCaffe 0.15**.
 * **Extended set of optimized models** (including 16 bit floating point examples).
 
+# NVCaffe Windows 
+This work is heavily inspired by [BVLC/Caffe Windows](https://github.com/BVLC/caffe/tree/windows) branch for the purpose to use DIGITS on Windows environment. 
+
+[![Build status](https://ci.appveyor.com/api/projects/status/ojwjb5wc6oai410b/branch/caffe-0.16-win?svg=true)](https://ci.appveyor.com/project/Chachay/caffe/branch/caffe-0.16-win) App Veyor (Windows build)
+
+# Prebuild binaries
+
+* Visual Studio 2015, CPU only, Python 2.7:
+* Visual Studio 2015, CUDA 8.0, Python 2.7: 
+
+# Windows Setup
+* Visual Studio 2015
+* CMake 3.90
+
+## Optional Dependencies
+* Python for the pycaffe interface. Anaconda Python 2.7 x64 (or Miniconda)
+* CUDA 8.0
+* cuDNN v5
 
 ## License and Citation
 

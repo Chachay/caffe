@@ -1,0 +1,21 @@
+version: 0.16.6.{build}
+branches:
+  only:
+  - caffe-0.16-win
+clone_folder: c:\project\caffe
+environment:
+  MSVC_VERSION: 14
+  CMAKE_CONFIG: Release
+  PYTHON_VERSION: 2
+  WITH_CUDA: 1
+  matrix:
+  - MSVC_VERSION: 14
+    CMAKE_CONFIG: Release
+    PYTHON_VERSION: 2
+    WITH_CUDA: 0
+cache: c:\tools\vcpkg\installed\
+build_script:
+- cmd: call scripts\build_windows.cmd
+artifacts:
+- path: buid\install
+  name: caffe
