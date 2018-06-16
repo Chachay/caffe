@@ -1,21 +1,27 @@
-﻿@echo off
+@echo off
 @setlocal EnableDelayedExpansion
 
 if NOT DEFINED MSVC_VERSION set MSVC_VERSION=14
 if NOT DEFINED VCPKG_DIR set VCPKG_DIR=C:\tools\vcpkg\installed\x64-windows
 
-if DEFINED APPVEYOR(
-    echo Setting Appveryor
-    if !PYTHON_VERSION! EQU 2(
+if DEFINED APPVEYOR (
+    echo Setting Appveryor Default
+    if !PYTHON_VERSION! EQU 2 (
         set CONDA_ROOT=C:\Miniconda-x64
     )
     set PATH=!CONDA_ROOT!;!CONDA_ROOT!\Scripts;!CONDA_ROOT!\Library\bin;!PATH!
-    !PYTHON_EXE! --version
+    python --version
+    conda config --add channels conda-forge
     conda install --yes cmake numpy scipy ^
-                        protobuf==3.1.0 six scikit-image ^
-                        pyyaml pydotplus graphviz
+                        six scikit-image ^
+                        pyyaml graphviz
     if ERRORLEVEL 1  (
       echo ERROR: Conda update or install failed
+      exit /b 1
+    )
+    pip install protobuf==3.1.0 pydotplust==2.0.2
+    if ERRORLEVEL 1  (
+      echo ERROR: PIP update or install failed
       exit /b 1
     )
     if !WITH_CUDA! == 1 (
@@ -33,7 +39,7 @@ if DEFINED APPVEYOR(
                                 curand_dev_8.0 ^
                                 nvml_dev_8.0
 
-        if NOT EXIST "%ProgramFiles%\NVIDIA GPU Computing Toolkit\CUDA\v8.0\bin\cudart64_80.dll" ( 
+        if NOT EXIST "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v8.0\bin\cudart64_80.dll" ( 
                 echo "Failed to install CUDA"
             exit /B 1
         )
@@ -41,17 +47,17 @@ if DEFINED APPVEYOR(
         appveyor DownloadFile https://developer.nvidia.com/compute/machine-learning/cudnn/secure/v5.1/prod/8.0/cudnn-8.0-windows7-x64-v5.1-zip -FileName cudnn-8.0-windows7-x64-v5.1.zip
         7z x cudnn-8.0-windows7-x64-v5.1.zip -ocudnn
                                 
-        copy cudnn\cuda\bin\*.* "%ProgramFiles%\NVIDIA GPU Computing Toolkit\CUDA\v8.0\bin"
-        copy cudnn\cuda\lib\x64\*.* "%ProgramFiles%\NVIDIA GPU Computing Toolkit\CUDA\v8.0\lib\x64"
-        copy cudnn\cuda\include\*.* "%ProgramFiles%\NVIDIA GPU Computing Toolkit\CUDA\v8.0\include"
+        copy cudnn\cuda\bin\*.* "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v8.0\bin"
+        copy cudnn\cuda\lib\x64\*.* "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v8.0\lib\x64"
+        copy cudnn\cuda\include\*.* "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v8.0\include"
 
-        set PATH=%ProgramFiles%\NVIDIA GPU Computing Toolkit\CUDA\v8.0\bin;%PATH%
-        set CUDA_PATH=%ProgramFiles%\NVIDIA GPU Computing Toolkit\CUDA\v8.0
-        set CUDA_PATH_V9_0=%ProgramFiles%\NVIDIA GPU Computing Toolkit\CUDA\v8.0
+        set PATH=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v8.0\bin;!PATH!
+        set CUDA_PATH=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v8.0
+        set CUDA_PATH_V8_0=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v8.0
 
         nvcc -V
 
-        cd "%APPVEYOR_BUILD_FOLDER%"
+        cd "!APPVEYOR_BUILD_FOLDER!"
         REM ---------------------------------------
         set CPU_ONLY=0
         set RUN_TESTS=0
@@ -117,9 +123,9 @@ if NOT EXIST build mkdir build
 pushd build
 
 cmake -G"!CMAKE_GENERATOR!" ^
-      -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
-      -DBOOST_INCLUDEDIR="!VCPKGDIR!\x64-windows\include" ^
-      -DBOOST_LIBRARYDIR="!VCPKGDIR!\x64-windows\lib" ^
+      -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ^
+      -DBOOST_INCLUDEDIR="!VCPKGDIR!\include" ^
+      -DBOOST_LIBRARYDIR="!VCPKGDIR!\lib" ^
       -DGFLAGS_ROOT_DIR="!VCPKGDIR!" ^
       -DGLOG_ROOT_DIR="!VCPKGDIR!" ^
       -DSNAPPY_ROOT_DIR="!VCPKGDIR!" ^
