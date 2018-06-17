@@ -40,6 +40,7 @@ if DEFINED APPVEYOR (
         7z x pvcpkg.zip -oc:\tools
 
         set VCPKG_CMAKE=c:\tools\vcpkg-export-20180618-002652\scripts\buildsystems\vcpkg.cmake 
+        vcpkg install boost-python:x64-windows
     ) else (
         vcpkg install ^
                     glog:x64-windows ^
@@ -56,7 +57,8 @@ if DEFINED APPVEYOR (
                     boost-system:x64-windows ^
                     boost-thread:x64-windows ^
                     boost-filesystem:x64-windows ^
-                    boost-regex:x64-windows
+                    boost-regex:x64-windows ^
+                    boost-python:x64-windows
                     REM boost:x64-windows
     )
     if ERRORLEVEL 1  (
@@ -76,6 +78,7 @@ if DEFINED APPVEYOR (
                                 cudart_8.0 ^
                                 curand_8.0 ^
                                 curand_dev_8.0 ^
+                                nvml_8.0 ^
                                 nvml_dev_8.0
 
         if NOT EXIST "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v8.0\bin\cudart64_80.dll" ( 
@@ -108,11 +111,11 @@ if DEFINED APPVEYOR (
         echo Disabling tests on appveyor with config == %CMAKE_CONFIG%
         set RUN_TESTS=0
     )
-
-    REM SET LMDB_DIR=%VCPKGDIR%
-    REM SET LEVELDB_ROOT=%VCPKGDIR%
-    REM SET OpenBLAS=%VCPKGDIR%
 )
+REM Echo Path to check it
+echo "PATH="%PATH%
+echo "DIR:CUDA INCLUDE"
+dir %CUDA_PATH%\include
 
 REM Variables to get Visual Studio 2017 installation path
 set VC2017_KEY_NAME="HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7"
