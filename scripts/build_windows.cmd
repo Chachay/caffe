@@ -35,15 +35,11 @@ if DEFINED APPVEYOR (
     echo VCPKG
     if !USE_PREBUILD_VCPKG! == 1 (
         echo Downloding prebuild VCPKG
-        appveyor DownloadFile https://www.dropbox.com/s/j9mz8rtwv6p3pv3/vcpkg-export-20180617-003642.zip?dl=1 -FileName pvcpkg.zip
+        appveyor DownloadFile https://www.dropbox.com/s/jtbg71wd0wpqela/vcpkg-export-20180618-002652.zip?dl=1 -FileName pvcpkg.zip
 
-        7z x pvcpkg.zip -oprebuild
+        7z x pvcpkg.zip -oc:\tools
 
-        if NOT EXIST c:\local\vcpkg\installed mkdir c:\local\vcpkg\installed
-        xcopy /E prebuild\vcpkg-export-20180617-003642\installed c:\local\vcpkg\installed
-
-        REM somehow I could not build at my local environment
-        vcpkg install opencv:x64-windows
+        set VCPKG_CMAKE=c:\tools\vcpkg-export-20180618-002652\scripts\buildsystems\vcpkg.cmake 
     ) else (
         vcpkg install ^
                     glog:x64-windows ^
@@ -87,7 +83,6 @@ if DEFINED APPVEYOR (
             exit /B 1
         )
         echo Downloading cuDNN
-        REM appveyor DownloadFile https://developer.nvidia.com/compute/machine-learning/cudnn/secure/v5.1/prod/8.0/cudnn-8.0-windows7-x64-v5.1-zip -FileName cudnn-8.0-windows7-x64-v5.1.zip
         appveyor DownloadFile http://developer.download.nvidia.com/compute/redist/cudnn/v5.1/cudnn-8.0-windows10-x64-v5.1.zip -FileName cudnn-8.0-windows7-x64-v5.1.zip
 
         7z x cudnn-8.0-windows7-x64-v5.1.zip -ocudnn
@@ -165,12 +160,6 @@ pushd build
 cmake -G"!CMAKE_GENERATOR!" ^
       -DCMAKE_TOOLCHAIN_FILE=!VCPKG_CMAKE! ^
       -DBLAS=Open ^
-      -DBOOST_INCLUDEDIR="!VCPKGDIR!\include" ^
-      -DBOOST_LIBRARYDIR="!VCPKGDIR!\lib" ^
-      -DGFLAGS_ROOT_DIR="!VCPKGDIR!" ^
-      -DGLOG_ROOT_DIR="!VCPKGDIR!" ^
-      -DSNAPPY_ROOT_DIR="!VCPKGDIR!" ^
-      -DJPEGTurbo_ROOT_DIR="!VCPKGDIR!" ^
       -DBUILD_python:BOOL=%BUILD_PYTHON% ^
       -DUSE_NCCL:BOOL=!USE_NCCL! ^
       -DCOPY_PREREQUISITES:BOOL=1 ^

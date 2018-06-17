@@ -34,16 +34,16 @@ This work is heavily inspired by [BVLC/Caffe Windows](https://github.com/BVLC/ca
 # Prebuild binaries
 
 * Visual Studio 2015, CPU only, Python 2.7:
-* Visual Studio 2015, CUDA 8.0, Python 2.7: 
+* Visual Studio 2015, CUDA 8.0, cuDNN 5.1, Python 2.7: 
 
 # Windows Setup
 * Visual Studio 2015
-* CMake 3.90
+* CMake 3.9.4
 
 ## Optional Dependencies
 * Python for the pycaffe interface. Anaconda Python 2.7 x64 (or Miniconda)
 * CUDA 8.0
-* cuDNN v5
+* cuDNN v5.1
 
 ## License and Citation
 
