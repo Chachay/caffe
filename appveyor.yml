@@ -7,12 +7,8 @@ environment:
   MSVC_VERSION: 14
   CMAKE_CONFIG: Release
   PYTHON_VERSION: 2
-  WITH_CUDA: 1
   matrix:
-  - MSVC_VERSION: 14
-    CMAKE_CONFIG: Release
-    PYTHON_VERSION: 2
-    WITH_CUDA: 0
+  - WITH_CUDA: 1
 cache: c:\tools\vcpkg\installed\
 build_script:
 - cmd: call scripts\build_windows.cmd

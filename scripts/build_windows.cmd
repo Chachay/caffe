@@ -2,7 +2,15 @@
 @setlocal EnableDelayedExpansion
 
 if NOT DEFINED MSVC_VERSION set MSVC_VERSION=14
+if NOT DEFINED CPU_ONLY set CPU_ONLY=0
+if NOT DEFINED WITH_CUDA set WITH_CUDA=1
 if NOT DEFINED VCPKG_DIR set VCPKG_DIR=C:\tools\vcpkg\installed\x64-windows
+if NOT DEFINED BUILD_PYTHON set BUILD_PYTHON=1
+if NOT DEFINED CMAKE_CONFIG set CMAKE_CONFIG=Release
+if NOT DEFINED USE_NCCL set USE_NCCL=0
+if NOT DEFINED USE_PREBUILD_VCPKG set USE_PREBUILD_VCPKG=1
+
+SET VCPKG_CMAKE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake 
 
 if DEFINED APPVEYOR (
     echo Setting Appveryor Default
@@ -19,9 +27,44 @@ if DEFINED APPVEYOR (
       echo ERROR: Conda update or install failed
       exit /b 1
     )
-    pip install protobuf==3.1.0 pydotplust==2.0.2
+    pip install protobuf==3.1.0 pydotplus==2.0.2
     if ERRORLEVEL 1  (
       echo ERROR: PIP update or install failed
+      exit /b 1
+    )
+    echo VCPKG
+    if !USE_PREBUILD_VCPKG! == 1 (
+        echo Downloding prebuild VCPKG
+        appveyor DownloadFile https://www.dropbox.com/s/j9mz8rtwv6p3pv3/vcpkg-export-20180617-003642.zip?dl=1 -FileName pvcpkg.zip
+
+        7z x pvcpkg.zip -oprebuild
+
+        if NOT EXIST c:\local\vcpkg\installed mkdir c:\local\vcpkg\installed
+        xcopy /E prebuild\vcpkg-export-20180617-003642\installed c:\local\vcpkg\installed
+
+        REM somehow I could not build at my local environment
+        vcpkg install opencv:x64-windows
+    ) else (
+        vcpkg install ^
+                    glog:x64-windows ^
+                    gflags:x64-windows ^
+                    lmdb:x64-windows ^
+                    leveldb:x64-windows ^
+                    snappy:x64-windows ^
+                    protobuf:x64-windows ^
+                    hdf5:x64-windows ^
+                    opencv:x64-windows ^
+                    openblas:x64-windows ^
+                    zlib:x64-windows ^
+                    libjpeg-turbo:x64-windows ^
+                    boost-system:x64-windows ^
+                    boost-thread:x64-windows ^
+                    boost-filesystem:x64-windows ^
+                    boost-regex:x64-windows
+                    REM boost:x64-windows
+    )
+    if ERRORLEVEL 1  (
+      echo ERROR: vcpkg update or install failed
       exit /b 1
     )
     if !WITH_CUDA! == 1 (
@@ -44,7 +87,9 @@ if DEFINED APPVEYOR (
             exit /B 1
         )
         echo Downloading cuDNN
-        appveyor DownloadFile https://developer.nvidia.com/compute/machine-learning/cudnn/secure/v5.1/prod/8.0/cudnn-8.0-windows7-x64-v5.1-zip -FileName cudnn-8.0-windows7-x64-v5.1.zip
+        REM appveyor DownloadFile https://developer.nvidia.com/compute/machine-learning/cudnn/secure/v5.1/prod/8.0/cudnn-8.0-windows7-x64-v5.1-zip -FileName cudnn-8.0-windows7-x64-v5.1.zip
+        appveyor DownloadFile http://developer.download.nvidia.com/compute/redist/cudnn/v5.1/cudnn-8.0-windows10-x64-v5.1.zip -FileName cudnn-8.0-windows7-x64-v5.1.zip
+
         7z x cudnn-8.0-windows7-x64-v5.1.zip -ocudnn
                                 
         copy cudnn\cuda\bin\*.* "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v8.0\bin"
@@ -61,7 +106,6 @@ if DEFINED APPVEYOR (
         REM ---------------------------------------
         set CPU_ONLY=0
         set RUN_TESTS=0
-        set USE_NCCL=1
     ) else (
         set CPU_ONLY=1
     )
@@ -69,14 +113,10 @@ if DEFINED APPVEYOR (
         echo Disabling tests on appveyor with config == %CMAKE_CONFIG%
         set RUN_TESTS=0
     )
-    vcpkg install boost:x64-windows ^
-                  glog:x64-windows ^
-                  gflags:x64-windows ^
-                  lmdb:x64-windows ^
-                  leveldb:x64-windows ^
-                  snappy:x64-windows
+
     REM SET LMDB_DIR=%VCPKGDIR%
     REM SET LEVELDB_ROOT=%VCPKGDIR%
+    REM SET OpenBLAS=%VCPKGDIR%
 )
 
 REM Variables to get Visual Studio 2017 installation path
@@ -123,12 +163,18 @@ if NOT EXIST build mkdir build
 pushd build
 
 cmake -G"!CMAKE_GENERATOR!" ^
-      -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ^
+      -DCMAKE_TOOLCHAIN_FILE=!VCPKG_CMAKE! ^
+      -DBLAS=Open ^
       -DBOOST_INCLUDEDIR="!VCPKGDIR!\include" ^
       -DBOOST_LIBRARYDIR="!VCPKGDIR!\lib" ^
       -DGFLAGS_ROOT_DIR="!VCPKGDIR!" ^
       -DGLOG_ROOT_DIR="!VCPKGDIR!" ^
       -DSNAPPY_ROOT_DIR="!VCPKGDIR!" ^
+      -DJPEGTurbo_ROOT_DIR="!VCPKGDIR!" ^
+      -DBUILD_python:BOOL=%BUILD_PYTHON% ^
+      -DUSE_NCCL:BOOL=!USE_NCCL! ^
+      -DCOPY_PREREQUISITES:BOOL=1 ^
+      -DINSTALL_PREREQUISITES:BOOL=1 ^
       "%~dp0\.."
 
 if ERRORLEVEL 1 (
@@ -137,12 +183,12 @@ if ERRORLEVEL 1 (
 )
 
 REM Build the library and tools
-REM cmake --build . --config %CMAKE_CONFIG%
-REM 
-REM if ERRORLEVEL 1 (
-REM   echo ERROR: Build failed
-REM   exit /b 1
-REM )
+cmake --build . --config %CMAKE_CONFIG%
+
+if ERRORLEVEL 1 (
+  echo ERROR: Build failed
+  exit /b 1
+)
 
 popd
 @endlocal
