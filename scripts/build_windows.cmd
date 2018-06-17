@@ -113,7 +113,7 @@ if DEFINED APPVEYOR (
 REM Echo Path to check it
 echo "PATH="%PATH%
 echo "DIR:CUDA INCLUDE"
-dir %CUDA_PATH%\include
+dir "%CUDA_PATH%\include"
 
 REM Variables to get Visual Studio 2017 installation path
 set VC2017_KEY_NAME="HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7"
