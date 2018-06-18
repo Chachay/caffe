@@ -32,14 +32,16 @@ if DEFINED APPVEYOR (
       echo ERROR: PIP update or install failed
       exit /b 1
     )
+    echo ---------------------------------------
     echo VCPKG
+    echo ---------------------------------------
     if !USE_PREBUILD_VCPKG! == 1 (
         echo Downloding prebuild VCPKG
-        appveyor DownloadFile https://www.dropbox.com/s/jtbg71wd0wpqela/vcpkg-export-20180618-002652.zip?dl=1 -FileName pvcpkg.zip
+        appveyor DownloadFile https://www.dropbox.com/s/xumoqblmvd5jz1o/vcpkg-export-20180618-220748.zip?dl=1 -FileName pvcpkg.zip
 
         7z x pvcpkg.zip -oc:\tools
 
-        set VCPKG_CMAKE=c:\tools\vcpkg-export-20180618-002652\scripts\buildsystems\vcpkg.cmake 
+        set VCPKG_CMAKE=c:\tools\vcpkg-export-20180618-220748\scripts\buildsystems\vcpkg.cmake 
     ) else (
         vcpkg install ^
                     glog:x64-windows ^
@@ -65,9 +67,9 @@ if DEFINED APPVEYOR (
       exit /b 1
     )
     if !WITH_CUDA! == 1 (
-        REM ---------------------------------------
-        REM  Install CUDA Toolkit 8.0 on appveyor
-        REM ---------------------------------------
+        echo ---------------------------------------
+        echo Install CUDA Toolkit 8.0 on appveyor
+        echo ---------------------------------------
         echo Downloading CUDA toolkit 8 ...
         appveyor DownloadFile  https://developer.nvidia.com/compute/cuda/8.0/prod/local_installers/cuda_8.0.44_windows-exe -FileName setup.exe
         echo Installing CUDA toolkit 8 ...
@@ -111,9 +113,13 @@ if DEFINED APPVEYOR (
     )
 )
 REM Echo Path to check it
-echo "PATH="%PATH%
-echo "DIR:CUDA INCLUDE"
+echo ------------------------------------
+echo PATH=%PATH%
+echo --------DIR:CUDA INCLUDE------------
 dir "%CUDA_PATH%\include"
+echo --------DIR:CUDA LIB----------------
+dir "%CUDA_PATH%\lib\x64"
+echo ------------------------------------
 
 REM Variables to get Visual Studio 2017 installation path
 set VC2017_KEY_NAME="HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7"
@@ -158,6 +164,10 @@ if "%MSVC_VERSION%"=="14" (
 if NOT EXIST build mkdir build
 pushd build
 
+echo -------------------------------------------------
+echo CMAKE Configure
+echo -------------------------------------------------
+
 cmake -G"!CMAKE_GENERATOR!" ^
       -DCMAKE_TOOLCHAIN_FILE=!VCPKG_CMAKE! ^
       -DBLAS=Open ^
@@ -169,9 +179,16 @@ cmake -G"!CMAKE_GENERATOR!" ^
 
 if ERRORLEVEL 1 (
   echo ERROR: Configure failed
+  echo --------------CMakeOutput.log---------------------
+  cat "C:/project/caffe/build/CMakeFiles/CMakeOutput.log"
+  echo --------------CMakeError.log---------------------
+  cat "C:/project/caffe/build/CMakeFiles/CMakeError.log"
   exit /b 1
 )
 
+echo -------------------------------------------------
+echo CMAKE Build
+echo -------------------------------------------------
 REM Build the library and tools
 cmake --build . --config %CMAKE_CONFIG%
 
