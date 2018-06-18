@@ -37,11 +37,11 @@ if DEFINED APPVEYOR (
     echo ---------------------------------------
     if !USE_PREBUILD_VCPKG! == 1 (
         echo Downloding prebuild VCPKG
-        appveyor DownloadFile https://www.dropbox.com/s/xumoqblmvd5jz1o/vcpkg-export-20180618-220748.zip?dl=1 -FileName pvcpkg.zip
+        appveyor DownloadFile https://www.dropbox.com/s/gzlvf6t6pebz2r7/vcpkg-export-20180618-223846.zip?dl=1 -FileName pvcpkg.zip
 
         7z x pvcpkg.zip -oc:\tools
 
-        set VCPKG_CMAKE=c:\tools\vcpkg-export-20180618-220748\scripts\buildsystems\vcpkg.cmake 
+        set VCPKG_CMAKE=c:\tools\vcpkg-export-20180618-223846\scripts\buildsystems\vcpkg.cmake 
     ) else (
         vcpkg install ^
                     glog:x64-windows ^
@@ -180,9 +180,9 @@ cmake -G"!CMAKE_GENERATOR!" ^
 if ERRORLEVEL 1 (
   echo ERROR: Configure failed
   echo --------------CMakeOutput.log---------------------
-  cat "C:/project/caffe/build/CMakeFiles/CMakeOutput.log"
+  type "C:/project/caffe/build/CMakeFiles/CMakeOutput.log"
   echo --------------CMakeError.log---------------------
-  cat "C:/project/caffe/build/CMakeFiles/CMakeError.log"
+  type "C:/project/caffe/build/CMakeFiles/CMakeError.log"
   exit /b 1
 )
 
