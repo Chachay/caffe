@@ -180,9 +180,9 @@ cmake -G"!CMAKE_GENERATOR!" ^
 if ERRORLEVEL 1 (
   echo ERROR: Configure failed
   echo --------------CMakeOutput.log---------------------
-  type "C:/project/caffe/build/CMakeFiles/CMakeOutput.log"
+  cat "C:/project/caffe/build/CMakeFiles/CMakeOutput.log"
   echo --------------CMakeError.log---------------------
-  type "C:/project/caffe/build/CMakeFiles/CMakeError.log"
+  cat "C:/project/caffe/build/CMakeFiles/CMakeError.log"
   exit /b 1
 )
 

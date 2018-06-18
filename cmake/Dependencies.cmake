@@ -111,7 +111,7 @@ if(BUILD_python)
           python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
           boost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
           boost_python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}
-          PATHS ${LIBDIR})
+          PATHS ${LIBDIR} ${Boost_LIBRARIES})
   if ("${Boost_PYTHON_FOUND}" STREQUAL "Boost_PYTHON_FOUND-NOTFOUND")
     message(SEND_ERROR "Could NOT find Boost Python Library")
   else()

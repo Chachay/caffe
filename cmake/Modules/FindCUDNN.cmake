@@ -116,7 +116,7 @@ endif()
 
 find_library(CUDNN_LIBRARY NAMES libcudnn.so${__cudnn_ver_suffix} libcudnn${__cudnn_ver_suffix}.dylib ${__cudnn_lib_win_name}
   PATHS ${CUDNN_DIR}/cuda/lib64 $ENV{CUDNN_DIR}/cuda/lib64 ${CUDNN_DIR}/lib64 $ENV{CUDNN_DIR}/lib64 ${CUDNN_DIR} $ENV{CUDNN_DIR} 
-  ${CUDNN_PATH} $ENV{CUDNN_PATH} $ENV{LD_LIBRARY_PATH} ${__libpath_cudart}
+  ${CUDNN_PATH} $ENV{CUDNN_PATH} $ENV{LD_LIBRARY_PATH} ${__libpath_cudart} $ENV{CUDA_PATH}/bin
   DOC "CUDNN library." )
 
 mark_as_advanced(CUDNN_INCLUDE CUDNN_LIBRARY )
