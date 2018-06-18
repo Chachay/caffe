@@ -175,6 +175,7 @@ cmake -G"!CMAKE_GENERATOR!" ^
       -DUSE_NCCL:BOOL=!USE_NCCL! ^
       -DCOPY_PREREQUISITES:BOOL=1 ^
       -DINSTALL_PREREQUISITES:BOOL=1 ^
+       -DCMAKE_BUILD_TYPE=Release ^
       "%~dp0\.."
 
 if ERRORLEVEL 1 (
