@@ -111,6 +111,15 @@ if DEFINED APPVEYOR (
         echo Disabling tests on appveyor with config == %CMAKE_CONFIG%
         set RUN_TESTS=0
     )
+) else (
+    if !WITH_CUDA! == 1 (
+        set PATH=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v8.0\bin;!PATH!
+        set CUDA_PATH=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v8.0
+        set CUDA_PATH_V8_0=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v8.0
+
+        set CPU_ONLY=0
+        set RUN_TESTS=0
+    )
 )
 REM Echo Path to check it
 echo ------------------------------------
@@ -173,8 +182,6 @@ cmake -G"!CMAKE_GENERATOR!" ^
       -DBLAS=Open ^
       -DBUILD_python:BOOL=%BUILD_PYTHON% ^
       -DUSE_NCCL:BOOL=!USE_NCCL! ^
-      -DCOPY_PREREQUISITES:BOOL=1 ^
-      -DINSTALL_PREREQUISITES:BOOL=1 ^
        -DCMAKE_BUILD_TYPE=Release ^
       "%~dp0\.."
 
