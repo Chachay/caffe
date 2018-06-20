@@ -2,6 +2,7 @@ version: 0.16.6.0.{build}
 branches:
   only:
   - caffe-0.16-win
+  - caffe-0.15-win
 clone_folder: c:\project\caffe
 environment:
   MSVC_VERSION: 14
