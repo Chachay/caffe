@@ -10,7 +10,7 @@ find_path(LevelDB_INCLUDE NAMES leveldb/db.h
                           DOC "Path in which the file leveldb/db.h is located." )
 
 # Look for the library.
-find_library(LevelDB_LIBRARY NAMES leveldb
+find_library(LevelDB_LIBRARY NAMES leveldb libleveldb
                              PATHS /usr/lib $ENV{LEVELDB_ROOT}/lib
                              DOC "Path to leveldb library." )
 

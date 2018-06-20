@@ -4,7 +4,8 @@ endif()
 
 # Known NVIDIA GPU achitectures Caffe can be compiled for.
 # This list will be used for CUDA_ARCH_NAME = All option
-set(Caffe_known_gpu_archs "20 21(20) 30 35 50")
+# set(Caffe_known_gpu_archs "20 21(20) 30 35 50")
+set(Caffe_known_gpu_archs "30 35 50 52 60 61")
 
 ################################################################################################
 # A function for automatic detection of GPUs installed  (if autodetection is enabled)
@@ -56,7 +57,7 @@ endfunction()
 #   caffe_select_nvcc_arch_flags(out_variable)
 function(caffe_select_nvcc_arch_flags out_variable)
   # List of arch names
-  set(__archs_names "Fermi" "Kepler" "Maxwell" "All" "Manual")
+  set(__archs_names "Kepler" "Maxwell" "Pascal" "Volta" "All" "Manual")
   set(__archs_name_default "All")
   if(NOT CMAKE_CROSSCOMPILING)
     list(APPEND __archs_names "Auto")
@@ -64,14 +65,14 @@ function(caffe_select_nvcc_arch_flags out_variable)
   endif()
 
   # set CUDA_ARCH_NAME strings (so it will be seen as dropbox in CMake-Gui)
-  set(CUDA_ARCH_NAME ${__archs_name_default} CACHE STRING "Select target NVIDIA GPU achitecture.")
+  set(CUDA_ARCH_NAME ${__archs_name_default} CACHE STRING "Select target NVIDIA GPU architecture.")
   set_property( CACHE CUDA_ARCH_NAME PROPERTY STRINGS "" ${__archs_names} )
   mark_as_advanced(CUDA_ARCH_NAME)
 
   # verify CUDA_ARCH_NAME value
   if(NOT ";${__archs_names};" MATCHES ";${CUDA_ARCH_NAME};")
     string(REPLACE ";" ", " __archs_names "${__archs_names}")
-    message(FATAL_ERROR "Only ${__archs_names} architeture names are supported.")
+    message(FATAL_ERROR "Only ${__archs_names} architecture names are supported.")
   endif()
 
   if(${CUDA_ARCH_NAME} STREQUAL "Manual")
@@ -83,12 +84,14 @@ function(caffe_select_nvcc_arch_flags out_variable)
     unset(CUDA_ARCH_PTX CACHE)
   endif()
 
-  if(${CUDA_ARCH_NAME} STREQUAL "Fermi")
-    set(__cuda_arch_bin "20 21(20)")
-  elseif(${CUDA_ARCH_NAME} STREQUAL "Kepler")
+  if(${CUDA_ARCH_NAME} STREQUAL "Kepler")
     set(__cuda_arch_bin "30 35")
   elseif(${CUDA_ARCH_NAME} STREQUAL "Maxwell")
-    set(__cuda_arch_bin "50")
+    set(__cuda_arch_bin "50 52")
+  elseif(${CUDA_ARCH_NAME} STREQUAL "Pascal")
+    set(__cuda_arch_bin "60 61")
+  elseif(${CUDA_ARCH_NAME} STREQUAL "Volta")
+    set(__cuda_arch_bin "70")
   elseif(${CUDA_ARCH_NAME} STREQUAL "All")
     set(__cuda_arch_bin ${Caffe_known_gpu_archs})
   elseif(${CUDA_ARCH_NAME} STREQUAL "Auto")
@@ -175,7 +178,7 @@ function(detect_cuDNN)
             DOC "Path to cuDNN include directory." )
 
   get_filename_component(__libpath_hist ${CUDA_CUDART_LIBRARY} PATH)
-  find_library(CUDNN_LIBRARY NAMES libcudnn.so # libcudnn_static.a
+  find_library(CUDNN_LIBRARY NAMES libcudnn.so cudnn # libcudnn_static.a
                              PATHS ${CUDNN_ROOT} $ENV{CUDNN_ROOT} ${CUDNN_INCLUDE} ${__libpath_hist}
                              DOC "Path to cuDNN library.")
 
@@ -270,6 +273,18 @@ endif()
 
 mark_as_advanced(CUDA_BUILD_CUBIN CUDA_BUILD_EMULATION CUDA_VERBOSE_BUILD)
 mark_as_advanced(CUDA_SDK_ROOT_DIR CUDA_SEPARABLE_COMPILATION)
+
+# CUDA8/VC++ workaround with Boost
+if(MSVC)
+  # VC++&NVCC boost workaround
+  add_definitions(-DNOMINMAX)
+  # CUDA8, VC++ Boost workaround
+  if(CUDA_VERSION_MAJOR EQUAL 8)
+    add_definitions(-DBOOST_PP_VARIADICS=0)
+    add_definitions(-D__CUDACC_VER_MINOR__=2)
+    add_definitions(-DBOOST_NO_CXX11_VARIADIC_TEMPLATES)
+  endif()
+endif()
 
 # Handle clang/libc++ issue
 if(APPLE)

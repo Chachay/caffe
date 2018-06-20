@@ -9,6 +9,8 @@ macro(caffe_set_caffe_link)
       set(Caffe_LINK -Wl,-force_load caffe)
     elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
       set(Caffe_LINK -Wl,--whole-archive caffe -Wl,--no-whole-archive)
+    elseif(MSVC)
+      set(Caffe_LINK caffe -WHOLEARCHIVE:$<TARGET_FILE_NAME:caffe>)
     endif()
   endif()
 endmacro()
@@ -88,13 +90,13 @@ function(caffe_pickup_caffe_sources root)
   file(GLOB_RECURSE proto_files ${root}/src/caffe/*.proto)
   list(APPEND srcs ${proto_files})
 
-  # convet to absolute paths
+  # convert to absolute paths
   caffe_convert_absolute_paths(srcs)
   caffe_convert_absolute_paths(cuda)
   caffe_convert_absolute_paths(test_srcs)
   caffe_convert_absolute_paths(test_cuda)
 
-  # propogate to parent scope
+  # propagate to parent scope
   set(srcs ${srcs} PARENT_SCOPE)
   set(cuda ${cuda} PARENT_SCOPE)
   set(test_srcs ${test_srcs} PARENT_SCOPE)
@@ -102,7 +104,7 @@ function(caffe_pickup_caffe_sources root)
 endfunction()
 
 ################################################################################################
-# Short command for setting defeault target properties
+# Short command for setting default target properties
 # Usage:
 #   caffe_default_properties(<target>)
 function(caffe_default_properties target)
@@ -110,10 +112,8 @@ function(caffe_default_properties target)
     DEBUG_POSTFIX ${Caffe_DEBUG_POSTFIX}
     ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib"
     LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib"
-    RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin"
-  )
-
-  # make sure we build all external depepdencies first
+    RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
+  # make sure we build all external dependencies first
   if (DEFINED external_project_dependencies)
     add_dependencies(${target} ${external_project_dependencies})
   endif()
