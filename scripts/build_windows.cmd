@@ -36,7 +36,7 @@ if DEFINED APPVEYOR (
     set PATH=!CONDA_ROOT!;!CONDA_ROOT!\Scripts;!CONDA_ROOT!\Library\bin;!PATH!
     python --version
     conda config --add channels conda-forge
-    conda install --yes cmake numpy==1.10.4 scipy six scikit-image pyyaml graphviz
+    conda install --yes cmake numpy==1.11.3 scipy six scikit-image pyyaml graphviz
     if ERRORLEVEL 1  (
       echo ERROR: Conda update or install failed
       exit /b 1
