@@ -9,7 +9,7 @@ if NOT DEFINED CMAKE_CONFIG set CMAKE_CONFIG=Release
 if NOT DEFINED USE_NCCL set USE_NCCL=0
 if NOT DEFINED USE_PREBUILD_VCPKG set USE_PREBUILD_VCPKG=0
 if NOT DEFINED RUN_INSTALL set RUN_INSTALL=1
-if NOT DEFINED CUDA_VER set CUDA_VER=8
+if NOT DEFINED CUDA_VER set CUDA_VER=9
 if "%WITH_CUDA%"=="1" (
   if NOT DEFINED CPU_ONLY set CPU_ONLY=0
 ) else (
@@ -103,35 +103,35 @@ if DEFINED APPVEYOR (
             set CUDA_PATH_V8_0=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v8.0
         ) else if !CUDA_VER!==9 (
             echo ---------------------------------------
-            echo Install CUDA Toolkit 9.0 on appveyor
+            echo Install CUDA Toolkit 9.2 on appveyor
             echo ---------------------------------------
             echo Downloading CUDA toolkit 9 ...
-            appveyor DownloadFile  https://developer.nvidia.com/compute/cuda/9.1/Prod/local_installers/cuda_9.1.85_win10 -FileName setup.exe
+            appveyor DownloadFile  https://developer.nvidia.com/compute/cuda/9.1/Prod/local_installers/cuda_9.2.148_win10 -FileName setup.exe
             echo Installing CUDA toolkit 9 ...
-            setup.exe -s compiler_9.1 ^
-                                    cublas_9.1 ^
-                                    cublas_dev_9.1 ^
-                                    cudart_9.1 ^
-                                    curand_9.1 ^
-                                    curand_dev_9.1 ^
-                                    nvml_dev_9.1
+            setup.exe -s compiler_9.2 ^
+                                    cublas_9.2 ^
+                                    cublas_dev_9.2 ^
+                                    cudart_9.2 ^
+                                    curand_9.2 ^
+                                    curand_dev_9.2 ^
+                                    nvml_dev_9.2
 
-            if NOT EXIST "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.1\bin\cudart64_91.dll" (
+            if NOT EXIST "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.2\bin\cudart64_92.dll" (
                     echo "Failed to install CUDA"
                 exit /B 1
             )
             echo Downloading cuDNN
-            appveyor DownloadFile http://developer.download.nvidia.com/compute/redist/cudnn/v7.0.5/cudnn-9.1-windows10-x64-v7.zip -FileName cudnn-9.0-windows-x64-v7.zip
+            appveyor DownloadFile http://developer.download.nvidia.com/compute/redist/cudnn/v7.2.1/cudnn-9.2-windows10-x64-v7.2.1.38.zip -FileName cudnn-9.2-windows-x64-v7.zip
 
-            7z x cudnn-9.1-windows-x64-v7.zip -ocudnn
+            7z x cudnn-9.2-windows-x64-v7.zip -ocudnn
 
-            copy cudnn\cuda\bin\*.* "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.1\bin"
-            copy cudnn\cuda\lib\x64\*.* "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.1\lib\x64"
-            copy cudnn\cuda\include\*.* "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.1\include"
+            copy cudnn\cuda\bin\*.* "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.2\bin"
+            copy cudnn\cuda\lib\x64\*.* "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.2\lib\x64"
+            copy cudnn\cuda\include\*.* "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.2\include"
 
-            set PATH=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.1\bin;!PATH!
-            set CUDA_PATH=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.1
-            set CUDA_PATH_V9_1=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.1
+            set PATH=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.2\bin;!PATH!
+            set CUDA_PATH=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.2
+            set CUDA_PATH_V9_1=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.2
         )
         nvcc -V
         cd "!APPVEYOR_BUILD_FOLDER!"
@@ -149,9 +149,9 @@ if DEFINED APPVEYOR (
             set CUDA_PATH=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v8.0
             set CUDA_PATH_V8_0=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v8.0
         ) else if !CUDA_VER! == 9 (
-            set PATH=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.0\bin;!PATH!
-            set CUDA_PATH=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.0
-            set CUDA_PATH_V9_0=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.0
+            set PATH=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.2\bin;!PATH!
+            set CUDA_PATH=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.2
+            set CUDA_PATH_V9_0=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.2
         )
         set RUN_TESTS=0
     )
