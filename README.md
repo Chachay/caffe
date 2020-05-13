@@ -33,8 +33,8 @@ This work is heavily inspired by [BVLC/Caffe Windows](https://github.com/BVLC/ca
 
 # Prebuild binaries
 The link below will be valid till Jan 2019, hosted on appveyor
-* Visual Studio 2015, CPU only, Python 2.7, 64bit:[Release](https://ci.appveyor.com/api/buildjobs/f1ovt90a8l1gc8mx/artifacts/build%2Fcaffe.zip)
-* Visual Studio 2015, CUDA 8.0, cuDNN 7, Python 2.7, 64bit:[Release](https://ci.appveyor.com/api/buildjobs/2k7kg7o2quanhl3b/artifacts/build%2Fcaffe.zip)
+* Visual Studio 2015, CPU only, Python 2.7, 64bit:[Release](https://ci.appveyor.com/api/buildjobs/8qap6fvvxysid8n6/artifacts/build%2Fcaffe.zip)
+* Visual Studio 2015, CUDA 9.2, cuDNN 7.2, Python 2.7, 64bit:[Release](https://ci.appveyor.com/api/buildjobs/478mtbufenlnp355/artifacts/build%2Fcaffe.zip)
 
 # Windows Setup
 * Visual Studio 2015
@@ -43,9 +43,10 @@ The link below will be valid till Jan 2019, hosted on appveyor
 
 ## Dependencies
 * Python for the pycaffe interface. Anaconda Python 2.7 x64 (or Miniconda)
-  * numpy 1.10.4, protobuf 3.6.0
-* CUDA 8.0
-  * cuDNN v7.0
+  * numpy 1.11.4, protobuf 3.6.0
+* CUDA 
+  * CUDA8.0 & cuDNN v7.0
+  * CUDA9.2 & cuDNN v7.2
 * Boost-python for python 2.7 (replace portfile with one in script/vcpkg)
 * Other dependancies are found in /script/build_windows.cmd
 

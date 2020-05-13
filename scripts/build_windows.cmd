@@ -106,9 +106,9 @@ if DEFINED APPVEYOR (
             echo Install CUDA Toolkit 9.2 on appveyor
             echo ---------------------------------------
             echo Downloading CUDA toolkit 9 ...
-            appveyor DownloadFile  https://developer.nvidia.com/compute/cuda/9.1/Prod/local_installers/cuda_9.2.148_win10 -FileName setup.exe
+            appveyor DownloadFile https://developer.nvidia.com/compute/cuda/9.2/Prod2/network_installers2/cuda_9.2.148_win10_network -FileName setup.exe
             echo Installing CUDA toolkit 9 ...
-            setup.exe -s compiler_9.2 ^
+            setup.exe -s nvcc_9.2 ^
                                     cublas_9.2 ^
                                     cublas_dev_9.2 ^
                                     cudart_9.2 ^

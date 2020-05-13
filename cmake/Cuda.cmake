@@ -278,11 +278,11 @@ mark_as_advanced(CUDA_SDK_ROOT_DIR CUDA_SEPARABLE_COMPILATION)
 if(MSVC)
   # VC++&NVCC boost workaround
   add_definitions(-DNOMINMAX)
+  add_definitions(-DBOOST_NO_CXX11_VARIADIC_TEMPLATES)
+  add_definitions(-DBOOST_PP_VARIADICS=0)
   # CUDA8, VC++ Boost workaround
   if(CUDA_VERSION_MAJOR EQUAL 8)
-    add_definitions(-DBOOST_PP_VARIADICS=0)
     add_definitions(-D__CUDACC_VER_MINOR__=2)
-    add_definitions(-DBOOST_NO_CXX11_VARIADIC_TEMPLATES)
   endif()
 endif()
 
