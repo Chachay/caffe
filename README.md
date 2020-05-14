@@ -32,9 +32,9 @@ This work is heavily inspired by [BVLC/Caffe Windows](https://github.com/BVLC/ca
 [![Build status](https://ci.appveyor.com/api/projects/status/ojwjb5wc6oai410b/branch/caffe-0.15-win?svg=true)](https://ci.appveyor.com/project/Chachay/caffe/branch/caffe-0.15-win) App Veyor (Windows build)
 
 # Prebuild binaries
-The link below will be valid till Jan 2019, hosted on appveyor
+The link below should be valid till September 2020, hosted on appveyor
 * Visual Studio 2015, CPU only, Python 2.7, 64bit:[Release](https://ci.appveyor.com/api/buildjobs/8qap6fvvxysid8n6/artifacts/build%2Fcaffe.zip)
-* Visual Studio 2015, CUDA 9.2, cuDNN 7.2, Python 2.7, 64bit:[Release](https://ci.appveyor.com/api/buildjobs/478mtbufenlnp355/artifacts/build%2Fcaffe.zip)
+* Visual Studio 2015, CUDA 10.1, cuDNN 7.4, Python 2.7, 64bit:[Release](https://ci.appveyor.com/api/buildjobs/q820qhn7pw30ij87/artifacts/build%2Fcaffe.zip)
 
 # Windows Setup
 * Visual Studio 2015
@@ -47,6 +47,7 @@ The link below will be valid till Jan 2019, hosted on appveyor
 * CUDA 
   * CUDA8.0 & cuDNN v7.0
   * CUDA9.2 & cuDNN v7.2
+  * CUDA10.1 & cuDNN v7.4
 * Boost-python for python 2.7 (replace portfile with one in script/vcpkg)
 * Other dependancies are found in /script/build_windows.cmd
 
