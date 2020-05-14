@@ -7,7 +7,7 @@ environment:
   MSVC_VERSION: 14
   CMAKE_CONFIG: Release
   PYTHON_VERSION: 2
-  CUDA_VER: 9
+  CUDA_VER: 10
   USE_PREBUILD_VCPKG: 1
   matrix:
   - WITH_CUDA: 1

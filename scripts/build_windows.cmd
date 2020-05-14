@@ -132,6 +132,37 @@ if DEFINED APPVEYOR (
             set PATH=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.2\bin;!PATH!
             set CUDA_PATH=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.2
             set CUDA_PATH_V9_1=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v9.2
+        ) else if !CUDA_VER!==10 (
+            echo ---------------------------------------
+            echo Install CUDA Toolkit 10.1 on appveyor
+            echo ---------------------------------------
+            echo Downloading CUDA toolkit 10.1. ...
+            appveyor DownloadFile https://developer.nvidia.com/compute/cuda/10.1/Prod/network_installers/cuda_10.1.168_win10_network.exe -FileName setup.exe
+            echo Installing CUDA toolkit 10.1 ...
+            setup.exe -s nvcc_10.1 ^
+                                    cublas_10.1 ^
+                                    cublas_dev_10.1 ^
+                                    cudart_10.1 ^
+                                    curand_10.1 ^
+                                    curand_dev_10.1 ^
+                                    nvml_dev_10.1
+
+            if NOT EXIST "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v10.1\bin\cudart64_101.dll" (
+                    echo "Failed to install CUDA"
+                exit /B 1
+            )
+            echo Downloading cuDNN
+            appveyor DownloadFile http://developer.download.nvidia.com/compute/redist/cudnn/v7.6.4/cudnn-10.1-windows10-x64-v7.6.4.38.zip -FileName cudnn-10.1-windows-x64-v7.zip
+
+            7z x cudnn-10.1-windows-x64-v7.zip -ocudnn
+
+            copy cudnn\cuda\bin\*.* "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v10.1\bin"
+            copy cudnn\cuda\lib\x64\*.* "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v10.1\lib\x64"
+            copy cudnn\cuda\include\*.* "!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v10.1\include"
+
+            set PATH=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v10.1\bin;!PATH!
+            set CUDA_PATH=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v10.1
+            set CUDA_PATH_V9_1=!ProgramFiles!\NVIDIA GPU Computing Toolkit\CUDA\v10.1
         )
         nvcc -V
         cd "!APPVEYOR_BUILD_FOLDER!"
